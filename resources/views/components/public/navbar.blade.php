@@ -19,21 +19,21 @@
 </a>
 
         <nav class="hidden items-center gap-8 md:flex">
-            <a href="{{ route('public.inicio') }}"
-               class="text-sm font-semibold text-white transition hover:text-violet-300">
-                Inicio
-            </a>
+    <a href="{{ route('public.inicio') }}"
+       class="text-sm font-semibold transition {{ request()->routeIs('public.inicio') ? 'text-white' : 'text-slate-400 hover:text-white' }}">
+        Inicio
+    </a>
 
-            <a href="{{ route('public.eventos') }}"
-               class="text-sm font-medium text-slate-400 transition hover:text-white">
-                Eventos
-            </a>
+    <a href="{{ route('public.eventos') }}"
+       class="text-sm font-semibold transition {{ request()->routeIs('public.eventos') ? 'text-white' : 'text-slate-400 hover:text-white' }}">
+        Eventos
+    </a>
 
-            <a href="{{ route('public.experiencias') }}"
-               class="text-sm font-medium text-slate-400 transition hover:text-white">
-                Experiencias Mora
-            </a>
-        </nav>
+    <a href="{{ route('public.experiencias') }}"
+       class="text-sm font-semibold transition {{ request()->routeIs('public.experiencias') ? 'text-white' : 'text-slate-400 hover:text-white' }}">
+        Experiencias Mora
+    </a>
+</nav>
 
         <div class="hidden items-center gap-4 md:flex">
     @auth

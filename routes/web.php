@@ -5,12 +5,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 use App\Livewire\Public\Home\HomePage;
+use App\Livewire\Public\Eventos\EventosPage;
 use App\Livewire\Auth\Login\LoginPage;
 use App\Livewire\Auth\Register\RegisterPage;
 
 Route::get('/', HomePage::class)->name('public.inicio');
+Route::get('/eventos', EventosPage::class)->name('public.eventos');
 
-Route::view('/eventos', 'public.placeholder')->name('public.eventos');
 Route::view('/experiencias-mora', 'public.placeholder')->name('public.experiencias');
 
 Route::middleware('guest')->group(function () {
