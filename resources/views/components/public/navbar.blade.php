@@ -36,28 +36,32 @@
         </nav>
 
         <div class="hidden items-center gap-4 md:flex">
-            @if(Route::has('login'))
-                <a href="{{ route('login') }}" class="text-sm font-semibold text-white hover:text-violet-300">
-                    Ingresar
-                </a>
-            @else
-                <a href="#" class="text-sm font-semibold text-white hover:text-violet-300">
-                    Ingresar
-                </a>
-            @endif
+    @auth
+        <span class="text-sm font-semibold text-slate-300">
+            {{ auth()->user()->nombre }}
+        </span>
 
-            @if(Route::has('register'))
-                <a href="{{ route('register') }}"
-                   class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-violet-500">
-                    Registrarme
-                </a>
-            @else
-                <a href="#"
-                   class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-violet-500">
-                    Registrarme
-                </a>
-            @endif
-        </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+
+            <button
+                type="submit"
+                class="rounded-lg border border-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/10"
+            >
+                Salir
+            </button>
+        </form>
+    @else
+        <a href="{{ route('login') }}" class="text-sm font-semibold text-white hover:text-violet-300">
+            Ingresar
+        </a>
+
+        <a href="{{ route('register') }}"
+           class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-violet-500">
+            Registrarme
+        </a>
+    @endauth
+</div>
 
         <button class="md:hidden rounded-lg border border-white/10 px-3 py-2 text-sm text-white">
             Menú

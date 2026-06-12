@@ -1,9 +1,28 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+
 use App\Livewire\Public\Home\HomePage;
+use App\Livewire\Auth\Login\LoginPage;
+use App\Livewire\Auth\Register\RegisterPage;
 
 Route::get('/', HomePage::class)->name('public.inicio');
 
 Route::view('/eventos', 'public.placeholder')->name('public.eventos');
 Route::view('/experiencias-mora', 'public.placeholder')->name('public.experiencias');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', LoginPage::class)->name('login');
+    Route::get('/register', RegisterPage::class)->name('register');
+});
+
+Route::post('/logout', function (Request $request) {
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('public.inicio');
+})->middleware('auth')->name('logout');
