@@ -11,6 +11,8 @@ use App\Livewire\Public\Experiencias\ExperienciasPage;
 use App\Livewire\Auth\Login\LoginPage;
 use App\Livewire\Auth\Register\RegisterPage;
 
+use App\Livewire\Admin\Dashboard\DashboardPage;
+
 /*
 |--------------------------------------------------------------------------
 | Rutas públicas
@@ -53,3 +55,11 @@ Route::post('/logout', function (Request $request) {
 
     return redirect()->route('public.inicio');
 })->middleware('auth')->name('logout');
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', DashboardPage::class)->name('dashboard');
+        Route::redirect('/', '/admin/dashboard');
+    });

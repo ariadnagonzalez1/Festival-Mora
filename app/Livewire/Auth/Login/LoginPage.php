@@ -45,6 +45,10 @@ class LoginPage extends Component
 
         request()->session()->regenerate();
 
+        if ($usuario->esAdministrador()) {
+        return redirect()->intended(route('admin.dashboard'));
+}
+
         return redirect()->intended(route('public.inicio'));
     }
 
