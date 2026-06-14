@@ -3,11 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+
 use App\Livewire\Public\Home\HomePage;
 use App\Livewire\Public\Eventos\EventosPage;
 use App\Livewire\Public\Experiencias\ExperienciasPage;
+
 use App\Livewire\Auth\Login\LoginPage;
 use App\Livewire\Auth\Register\RegisterPage;
+
+use App\Livewire\User\MisEntradas\MisEntradasPage;
+
 use App\Livewire\Admin\Dashboard\DashboardPage;
 use App\Livewire\Admin\Eventos\EventosPage as AdminEventosPage;
 use App\Livewire\Admin\Artistas\ArtistasPage;
@@ -20,7 +25,6 @@ use App\Livewire\Admin\Configuracion\ConfiguracionPage;
 |--------------------------------------------------------------------------
 | Rutas públicas
 |--------------------------------------------------------------------------
-| Estas pantallas las puede ver cualquier persona sin iniciar sesión.
 */
 
 Route::get('/', HomePage::class)->name('public.inicio');
@@ -34,7 +38,6 @@ Route::get('/experiencias-mora', ExperienciasPage::class)->name('public.experien
 |--------------------------------------------------------------------------
 | Login y registro
 |--------------------------------------------------------------------------
-| Solo aparecen si el usuario NO está logueado.
 */
 
 Route::middleware('guest')->group(function () {
@@ -45,9 +48,20 @@ Route::middleware('guest')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
+| Rutas de usuario logueado
+|--------------------------------------------------------------------------
+| Mis entradas NO va dentro de admin.
+*/
+
+Route::middleware('auth')->group(function () {
+    Route::get('/mis-entradas', MisEntradasPage::class)->name('user.mis-entradas');
+});
+
+
+/*
+|--------------------------------------------------------------------------
 | Logout
 |--------------------------------------------------------------------------
-| Cierra sesión y vuelve al inicio.
 */
 
 Route::post('/logout', function (Request $request) {
@@ -64,7 +78,6 @@ Route::post('/logout', function (Request $request) {
 |--------------------------------------------------------------------------
 | Rutas administrador
 |--------------------------------------------------------------------------
-| Solo puede entrar el usuario con rol administrador.
 */
 
 Route::middleware(['auth', 'admin'])
