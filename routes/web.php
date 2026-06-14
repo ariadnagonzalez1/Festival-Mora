@@ -13,7 +13,7 @@ use App\Livewire\Admin\Eventos\EventosPage as AdminEventosPage;
 use App\Livewire\Admin\Artistas\ArtistasPage;
 use App\Livewire\Admin\Ventas\VentasPage;
 use App\Livewire\Admin\ValidarQr\ValidarQrPage;
-
+use App\Livewire\Admin\Usuarios\UsuariosPage;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +75,7 @@ Route::middleware(['auth', 'admin'])
         Route::get('/artistas', ArtistasPage::class)->name('artistas');
         Route::get('/ventas', VentasPage::class)->name('ventas');
         Route::get('/validar-qr', ValidarQrPage::class)->name('validar-qr');
+        Route::get('/usuarios', UsuariosPage::class)->name('usuarios');
 
         Route::redirect('/', '/admin/dashboard');
     });

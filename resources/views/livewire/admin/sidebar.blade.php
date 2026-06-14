@@ -57,11 +57,12 @@
     Validar QR
 </a>
 
-            <a href="#"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
-                <span>◌</span>
-                Usuarios
-            </a>
+            <a href="{{ route('admin.usuarios') }}"
+   class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition
+   {{ request()->routeIs('admin.usuarios') ? 'bg-violet-600/30 text-white ring-1 ring-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
+    <span>◌</span>
+    Usuarios
+</a>
 
             <a href="#"
                class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
