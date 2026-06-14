@@ -12,6 +12,7 @@ use App\Livewire\Auth\Login\LoginPage;
 use App\Livewire\Auth\Register\RegisterPage;
 
 use App\Livewire\Admin\Dashboard\DashboardPage;
+use App\Livewire\Admin\Eventos\EventosPage as AdminEventosPage;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,10 +57,21 @@ Route::post('/logout', function (Request $request) {
     return redirect()->route('public.inicio');
 })->middleware('auth')->name('logout');
 
+
+/*
+|--------------------------------------------------------------------------
+| Rutas administrador
+|--------------------------------------------------------------------------
+| Solo puede entrar el usuario con rol administrador.
+*/
+
 Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', DashboardPage::class)->name('dashboard');
+
+        Route::get('/eventos', AdminEventosPage::class)->name('eventos');
+
         Route::redirect('/', '/admin/dashboard');
     });

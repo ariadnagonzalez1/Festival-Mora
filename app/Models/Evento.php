@@ -12,20 +12,20 @@ class Evento extends Model
     protected $table = 'eventos';
 
     protected $fillable = [
-        'titulo',
-        'slug',
-        'descripcion',
-        'fecha_inicio',
-        'fecha_fin',
-        'lugar',
-        'ciudad',
-        'provincia',
-        'imagen_url',
-        'estado',
-        'mostrar_en_banner',
-        'mostrar_en_inicio',
-        'created_by',
-    ];
+    'titulo',
+    'slug',
+    'descripcion',
+    'fecha_inicio',
+    'fecha_fin',
+    'lugar',
+    'ciudad',
+    'provincia',
+    'imagen_url',
+    'estado',
+    'mostrar_en_banner',
+    'mostrar_en_inicio',
+    'created_by',
+];
 
     protected $casts = [
         'fecha_inicio' => 'datetime',
