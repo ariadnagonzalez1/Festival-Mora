@@ -13,6 +13,7 @@ use App\Livewire\Auth\Register\RegisterPage;
 
 use App\Livewire\Admin\Dashboard\DashboardPage;
 use App\Livewire\Admin\Eventos\EventosPage as AdminEventosPage;
+use App\Livewire\Admin\Artistas\ArtistasPage;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,8 +71,8 @@ Route::middleware(['auth', 'admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', DashboardPage::class)->name('dashboard');
-
         Route::get('/eventos', AdminEventosPage::class)->name('eventos');
+        Route::get('/artistas', ArtistasPage::class)->name('artistas');
 
         Route::redirect('/', '/admin/dashboard');
     });
