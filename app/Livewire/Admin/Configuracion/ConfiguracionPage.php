@@ -11,6 +11,12 @@ use Livewire\Component;
 
 class ConfiguracionPage extends Component
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Datos de Mora
+    |--------------------------------------------------------------------------
+    */
+
     public string $nombre_comercial = '';
     public string $razon_social = '';
     public string $cuit = '';
@@ -19,16 +25,39 @@ class ConfiguracionPage extends Component
     public string $direccion = '';
     public string $bio_publica = '';
 
+    /*
+    |--------------------------------------------------------------------------
+    | Mercado Pago
+    |--------------------------------------------------------------------------
+    */
+
+    public string $nombre_receptor = 'Mora Producciones';
     public string $public_key = '';
     public string $access_token = '';
+    public string $pos_external_id = '';
     public string $webhook_url = '';
     public string $webhook_secret = '';
     public bool $modo_sandbox = true;
+
+    public bool $access_token_guardado = false;
+    public bool $webhook_secret_guardado = false;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Notificaciones
+    |--------------------------------------------------------------------------
+    */
 
     public bool $email_comprador_confirmacion = true;
     public bool $email_admin_nueva_compra = true;
     public bool $recordatorio_24hs_comprador = true;
     public bool $alerta_bajo_stock_admin = true;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Seguridad
+    |--------------------------------------------------------------------------
+    */
 
     public string $password_actual = '';
     public string $password_nueva = '';
@@ -38,12 +67,17 @@ class ConfiguracionPage extends Component
     {
         $productora = ConfiguracionProductora::firstOrCreate(
             ['id' => 1],
-            ['nombre_comercial' => 'Mora Producciones']
+            [
+                'nombre_comercial' => 'Mora Producciones',
+            ]
         );
 
         $mercadoPago = ConfiguracionMercadoPago::firstOrCreate(
             ['id' => 1],
-            ['modo' => 'test']
+            [
+                'modo' => 'test',
+                'nombre_receptor' => 'Mora Producciones',
+            ]
         );
 
         $notificaciones = ConfiguracionNotificacion::firstOrCreate(
@@ -56,6 +90,12 @@ class ConfiguracionPage extends Component
             ]
         );
 
+        /*
+        |--------------------------------------------------------------------------
+        | Cargar datos de Mora
+        |--------------------------------------------------------------------------
+        */
+
         $this->nombre_comercial = $productora->nombre_comercial ?? '';
         $this->razon_social = $productora->razon_social ?? '';
         $this->cuit = $productora->cuit ?? '';
@@ -64,9 +104,29 @@ class ConfiguracionPage extends Component
         $this->direccion = $productora->direccion ?? '';
         $this->bio_publica = $productora->bio_publica ?? '';
 
+        /*
+        |--------------------------------------------------------------------------
+        | Cargar Mercado Pago
+        |--------------------------------------------------------------------------
+        | No mostramos el access token ni webhook secret guardados.
+        | Solo indicamos internamente si existen.
+        |--------------------------------------------------------------------------
+        */
+
+        $this->nombre_receptor = $mercadoPago->nombre_receptor ?? 'Mora Producciones';
         $this->public_key = $mercadoPago->public_key ?? '';
+        $this->pos_external_id = $mercadoPago->pos_external_id ?? '';
         $this->webhook_url = $mercadoPago->webhook_url ?? '';
-        $this->modo_sandbox = $mercadoPago->modo === 'test';
+        $this->modo_sandbox = ($mercadoPago->modo ?? 'test') === 'test';
+
+        $this->access_token_guardado = ! empty($mercadoPago->access_token_encriptado);
+        $this->webhook_secret_guardado = ! empty($mercadoPago->webhook_secret_encriptado);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Cargar notificaciones
+        |--------------------------------------------------------------------------
+        */
 
         $this->email_comprador_confirmacion = (bool) $notificaciones->email_comprador_confirmacion;
         $this->email_admin_nueva_compra = (bool) $notificaciones->email_admin_nueva_compra;
@@ -77,6 +137,12 @@ class ConfiguracionPage extends Component
     public function guardarConfiguracion(): void
     {
         $this->validate([
+            /*
+            |--------------------------------------------------------------------------
+            | Datos de Mora
+            |--------------------------------------------------------------------------
+            */
+
             'nombre_comercial' => ['required', 'string', 'max:150'],
             'razon_social' => ['nullable', 'string', 'max:150'],
             'cuit' => ['nullable', 'string', 'max:20'],
@@ -85,11 +151,29 @@ class ConfiguracionPage extends Component
             'direccion' => ['nullable', 'string', 'max:255'],
             'bio_publica' => ['nullable', 'string'],
 
-            'public_key' => ['nullable', 'string'],
-            'access_token' => ['nullable', 'string'],
-            'webhook_url' => ['nullable', 'string'],
-            'webhook_secret' => ['nullable', 'string'],
+            /*
+            |--------------------------------------------------------------------------
+            | Mercado Pago
+            |--------------------------------------------------------------------------
+            */
+
+            'nombre_receptor' => ['required', 'string', 'max:150'],
+            'public_key' => ['nullable', 'string', 'max:255'],
+            'access_token' => ['nullable', 'string', 'max:1000'],
+            'pos_external_id' => ['nullable', 'string', 'max:150'],
+            'webhook_url' => ['nullable', 'string', 'max:255'],
+            'webhook_secret' => ['nullable', 'string', 'max:1000'],
+        ], [
+            'nombre_comercial.required' => 'Ingresá el nombre comercial de Mora.',
+            'nombre_receptor.required' => 'Ingresá el nombre receptor de Mercado Pago.',
+            'email_contacto.email' => 'Ingresá un email de contacto válido.',
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Guardar datos de Mora
+        |--------------------------------------------------------------------------
+        */
 
         ConfiguracionProductora::updateOrCreate(
             ['id' => 1],
@@ -104,23 +188,40 @@ class ConfiguracionPage extends Component
             ]
         );
 
+        /*
+        |--------------------------------------------------------------------------
+        | Guardar Mercado Pago
+        |--------------------------------------------------------------------------
+        | El Access Token y el Webhook Secret se guardan encriptados.
+        | Si se dejan vacíos, se mantiene el valor anterior.
+        |--------------------------------------------------------------------------
+        */
+
         $mercadoPago = ConfiguracionMercadoPago::firstOrCreate(['id' => 1]);
 
         $dataMercadoPago = [
+            'nombre_receptor' => $this->nombre_receptor ?: 'Mora Producciones',
             'public_key' => $this->public_key ?: null,
+            'pos_external_id' => $this->pos_external_id ?: null,
             'webhook_url' => $this->webhook_url ?: null,
             'modo' => $this->modo_sandbox ? 'test' : 'produccion',
         ];
 
-        if ($this->access_token !== '') {
-            $dataMercadoPago['access_token_encriptado'] = Crypt::encryptString($this->access_token);
+        if (trim($this->access_token) !== '') {
+            $dataMercadoPago['access_token_encriptado'] = Crypt::encryptString(trim($this->access_token));
         }
 
-        if ($this->webhook_secret !== '') {
-            $dataMercadoPago['webhook_secret_encriptado'] = Crypt::encryptString($this->webhook_secret);
+        if (trim($this->webhook_secret) !== '') {
+            $dataMercadoPago['webhook_secret_encriptado'] = Crypt::encryptString(trim($this->webhook_secret));
         }
 
         $mercadoPago->update($dataMercadoPago);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Guardar notificaciones
+        |--------------------------------------------------------------------------
+        */
 
         ConfiguracionNotificacion::updateOrCreate(
             ['id' => 1],
@@ -132,8 +233,17 @@ class ConfiguracionPage extends Component
             ]
         );
 
+        /*
+        |--------------------------------------------------------------------------
+        | Limpiar campos sensibles visibles
+        |--------------------------------------------------------------------------
+        */
+
         $this->access_token = '';
         $this->webhook_secret = '';
+
+        $this->access_token_guardado = ! empty($mercadoPago->fresh()->access_token_encriptado);
+        $this->webhook_secret_guardado = ! empty($mercadoPago->fresh()->webhook_secret_encriptado);
 
         session()->flash('success', 'Configuración guardada correctamente.');
     }

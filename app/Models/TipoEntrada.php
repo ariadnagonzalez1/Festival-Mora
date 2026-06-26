@@ -26,14 +26,28 @@ class TipoEntrada extends Model
         'venta_fisica',
         'metodo_pago',
         'ubicacion_descripcion',
+        'qr_pago_codigo',
+        'qr_pago_data',
+        'qr_pago_receptor',
+        'qr_pago_concepto',
+        'qr_pago_monto',
+        'qr_pago_estado',
+        'qr_pago_generado_at',
     ];
 
     protected $casts = [
-        'precio' => 'decimal:2',
-        'activo' => 'boolean',
-        'venta_online' => 'boolean',
-        'venta_fisica' => 'boolean',
-    ];
+    'precio' => 'decimal:2',
+    'stock_total' => 'integer',
+    'stock_disponible' => 'integer',
+    'stock_reservado' => 'integer',
+    'stock_vendido' => 'integer',
+    'umbral_bajo_stock' => 'integer',
+    'activo' => 'boolean',
+    'venta_online' => 'boolean',
+    'venta_fisica' => 'boolean',
+    'qr_pago_monto' => 'decimal:2',
+    'qr_pago_generado_at' => 'datetime',
+];
 
     public function evento()
     {

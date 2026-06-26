@@ -123,11 +123,11 @@
 </div>
 
 <div class="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
-    <div class="mb-5 flex items-center justify-between">
+    <div class="mb-5 flex items-center justify-between gap-4">
         <div>
             <h3 class="text-lg font-black text-white">Tipos de entradas</h3>
             <p class="text-sm text-slate-400">
-                General y VIP Plata van online. VIP Oro queda solo efectivo.
+                Cada tipo de entrada online genera automáticamente su QR de pago al guardar el evento.
             </p>
         </div>
 
@@ -139,10 +139,16 @@
     <div class="space-y-4">
         @foreach($tipos as $index => $tipo)
             <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
-                <div class="mb-4 flex items-center justify-between">
-                    <p class="font-bold text-white">
-                        Entrada #{{ $index + 1 }}
-                    </p>
+                <div class="mb-4 flex items-center justify-between gap-4">
+                    <div>
+                        <p class="font-bold text-white">
+                            Entrada #{{ $index + 1 }}
+                        </p>
+
+                        <p class="mt-1 text-xs text-slate-500">
+                            General, VIP Plata, VIP Oro u otro sector.
+                        </p>
+                    </div>
 
                     <x-admin.ui.button type="button" variant="danger" size="sm" wire:click="quitarTipo({{ $index }})">
                         Quitar
@@ -150,67 +156,164 @@
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-3">
-                    <input 
-                        type="text" 
-                        placeholder="Ej: General, VIP Plata de pie, VIP Oro"
-                        wire:model.defer="tipos.{{ $index }}.nombre" 
-                        class="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400"
-                    >
+                    <div>
+                        <input 
+                            type="text" 
+                            placeholder="Ej: General, VIP Plata, VIP Oro"
+                            wire:model.defer="tipos.{{ $index }}.nombre" 
+                            class="w-full rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400"
+                        >
 
-                    <input 
-                        type="number" 
-                        placeholder="Precio. Ej: 15000"
-                        wire:model.defer="tipos.{{ $index }}.precio" 
-                        class="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400"
-                    >
+                        @error('tipos.' . $index . '.nombre')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                    <input 
-                        type="number" 
-                        placeholder="Stock disponible. Ej: 500"
-                        wire:model.defer="tipos.{{ $index }}.stock_disponible" 
-                        class="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400"
-                    >
+                    <div>
+                        <input 
+                            type="number" 
+                            placeholder="Precio. Ej: 15000"
+                            wire:model.defer="tipos.{{ $index }}.precio" 
+                            class="w-full rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400"
+                        >
+
+                        @error('tipos.' . $index . '.precio')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <input 
+                            type="number" 
+                            placeholder="Stock disponible. Ej: 500"
+                            wire:model.defer="tipos.{{ $index }}.stock_disponible" 
+                            class="w-full rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400"
+                        >
+
+                        @error('tipos.' . $index . '.stock_disponible')
+                            <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
 
                     <select 
                         wire:model.defer="tipos.{{ $index }}.metodo_pago" 
                         class="rounded-xl border border-white/10 bg-[#111122] px-4 py-3 text-white outline-none focus:border-violet-400"
                     >
                         <option value="qr_mercado_pago">QR Mercado Pago</option>
-                        <option value="efectivo">Efectivo</option>
-                        <option value="ambos">Ambos</option>
                     </select>
 
                     <input 
                         type="text" 
                         placeholder="Ubicación / sector. Ej: Sector General"
                         wire:model.defer="tipos.{{ $index }}.ubicacion_descripcion" 
-                        class="md:col-span-2 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400"
+                        class="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400 md:col-span-2"
                     >
 
                     <textarea 
                         placeholder="Descripción. Ej: Entrada general con acceso al predio."
                         wire:model.defer="tipos.{{ $index }}.descripcion" 
                         rows="2" 
-                        class="md:col-span-3 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400"
+                        class="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-violet-400 md:col-span-3"
                     ></textarea>
 
                     <div class="flex flex-wrap gap-5 md:col-span-3">
                         <label class="flex items-center gap-2 text-sm text-slate-300">
-                            <input type="checkbox" wire:model.defer="tipos.{{ $index }}.activo">
+                            <input type="checkbox" wire:model.defer="tipos.{{ $index }}.activo" class="rounded border-white/10 bg-white/[0.06]">
                             Activa
                         </label>
 
                         <label class="flex items-center gap-2 text-sm text-slate-300">
-                            <input type="checkbox" wire:model.defer="tipos.{{ $index }}.venta_online">
+                            <input type="checkbox" wire:model.defer="tipos.{{ $index }}.venta_online" class="rounded border-white/10 bg-white/[0.06]">
                             Venta online
-                        </label>
-
-                        <label class="flex items-center gap-2 text-sm text-slate-300">
-                            <input type="checkbox" wire:model.defer="tipos.{{ $index }}.venta_fisica">
-                            Venta física
                         </label>
                     </div>
                 </div>
+
+                {{-- VISTA PREVIA / QR DE PAGO --}}
+                <div class="mt-5 rounded-2xl border border-violet-400/20 bg-violet-500/10 p-4">
+                    @if(!empty($tipo['qr_pago_data']))
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                            <div class="flex h-32 w-32 flex-shrink-0 items-center justify-center rounded-2xl bg-white p-3">
+                                {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(110)->margin(1)->generate($tipo['qr_pago_data']) !!}
+                            </div>
+
+                            <div class="min-w-0 flex-1">
+                                <p class="text-xs font-black uppercase tracking-[0.25em] text-violet-300">
+                                    QR de pago generado
+                                </p>
+
+                                <div class="mt-3 space-y-1 text-sm">
+                                    <p class="text-slate-400">
+                                        Receptor:
+                                        <span class="font-bold text-white">
+                                            {{ $tipo['qr_pago_receptor'] ?? 'Mora Producciones' }}
+                                        </span>
+                                    </p>
+
+                                    <p class="text-slate-400">
+                                        Monto:
+                                        <span class="font-bold text-white">
+                                            $ {{ number_format((float) ($tipo['qr_pago_monto'] ?? $tipo['precio'] ?? 0), 0, ',', '.') }}
+                                        </span>
+                                    </p>
+
+                                    <p class="text-slate-400">
+                                        Concepto:
+                                        <span class="font-bold text-white">
+                                            {{ $tipo['qr_pago_concepto'] ?? 'Entrada ' . ($tipo['nombre'] ?? '') }}
+                                        </span>
+                                    </p>
+
+                                    @if(!empty($tipo['qr_pago_codigo']))
+                                        <p class="break-all text-xs text-slate-500">
+                                            Código: {{ $tipo['qr_pago_codigo'] }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                            <div class="flex h-32 w-32 flex-shrink-0 items-center justify-center rounded-2xl border border-dashed border-white/20 bg-black/20">
+                                <span class="text-4xl text-violet-300">▦</span>
+                            </div>
+
+                            <div>
+                                <p class="text-xs font-black uppercase tracking-[0.25em] text-violet-300">
+                                    QR de pago automático
+                                </p>
+
+                                <p class="mt-2 text-sm text-slate-400">
+                                    Al guardar el evento, se generará un QR para esta entrada con el precio, concepto y receptor configurado.
+                                </p>
+
+                                <div class="mt-3 rounded-xl border border-white/10 bg-black/20 p-3 text-sm">
+                                    <p class="text-slate-400">
+                                        Receptor:
+                                        <span class="font-bold text-white">
+                                            Mora Producciones
+                                        </span>
+                                    </p>
+
+                                    <p class="mt-1 text-slate-400">
+                                        Monto:
+                                        <span class="font-bold text-white">
+                                            $ {{ number_format((float) ($tipo['precio'] ?? 0), 0, ',', '.') }}
+                                        </span>
+                                    </p>
+
+                                    <p class="mt-1 text-slate-400">
+                                        Concepto:
+                                        <span class="font-bold text-white">
+                                            Entrada {{ $tipo['nombre'] ?? 'sin nombre' }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
             </div>
         @endforeach
     </div>
